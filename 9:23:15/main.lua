@@ -1,6 +1,6 @@
 --9/23/15
 --Ian Smelser
---
+--Toggle fade
 
 local clock = os.clock
 function sleep(n)
