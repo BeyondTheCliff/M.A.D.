@@ -10,6 +10,12 @@ local click = display.newText("Click Here", display.contentWidth/2, 500,nil,60)
 
 --Function containing the count up and down, and the boolean logic check
 local function count()
+	--Change boolean logic depending on number state
+	if (num>=20) then --Check num for numbers greater than 20
+		state=false 
+	elseif (num<=0) then --Check num for numbers less than 20
+		state=true
+	end
 	--Count up and down depending on the boolean operator
 	if (state==true) then
 		num=num+1 --Count up
@@ -17,12 +23,6 @@ local function count()
 	else
 		num=num-1 --Count down
 		text.text=num
-	end
-	--Change boolean logic depending on number state
-	if (num>=20) then --Check num for numbers greater than 20
-		state=false 
-	elseif (num<=0) then --Check num for numbers less than 20
-		state=true
 	end
 end
 

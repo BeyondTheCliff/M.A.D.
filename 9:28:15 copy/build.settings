@@ -1,0 +1,7 @@
+setting = 
+{
+	orientation = 
+	{
+		supported = { "portrait", "landScapeLeft", "landscapeRight" } 
+	},
+}
