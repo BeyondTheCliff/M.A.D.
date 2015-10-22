@@ -27,27 +27,33 @@ name.inputType="default"
 bday.inputType="default"
 --Calculating function 
 local function calc(event)
-	--Modify the input to break up the information
-	local bdayLen = string.len(bday.text)
-	local birthYear = string.sub(bday.text, bdayLen-3, bdayLen)
-	local birthMonth = string.sub(bday.text, 1,2)
-	local birthDay = string.sub(bday.text, 4, 5)
-	--Debugging
-	print(birthYear)
-	print(birthMonth)
-	print(birthDay)
-	--Clean up the old screen
-	bday:removeSelf()
-	name:removeSelf()
-	text_bday:removeSelf()
-	text_name:removeSelf()
-	--Do all the math and display it
-	local totalSecToday = (todaysDate.year * secInYear) + (todaysDate.month * secInMonth) + (todaysDate.day * secInDay)
-	local totalSecBday = (birthYear * secInYear) + (birthMonth * secInMonth) + (birthDay * secInDay)
-	local totalSecAlive = totalSecToday - totalSecBday
-	local secAliveText = display.newText(name.text..", you have been Alive for :", w/2, 100, native.systemFont, 30)
-	local secAlive = display.newText(totalSecAlive.." seconds", w/2, 200, native.systemFont, 30)
-	local secAliveText2 = display.newText("and counting", w/2, 300, native.systemFont, 30)
+	if (bday.text~="" or bday.text~=nil) then
+		print("True")
+		--Modify the input to break up the information
+		local bdayLen = string.len(bday.text)
+		local birthYear = string.sub(bday.text, bdayLen-3, bdayLen)
+		local birthMonth = string.sub(bday.text, 1,2)
+		local birthDay = string.sub(bday.text, 4, 5)
+		--Debugging
+		print(birthYear)
+		print(birthMonth)
+		print(birthDay)
+		--Clean up the old screen
+		bday:removeSelf()
+		name:removeSelf()
+		text_bday:removeSelf()
+		text_name:removeSelf()
+		submit:removeSelf()
+		--Do all the math and display it
+		local totalSecToday = (todaysDate.year * secInYear) + (todaysDate.month * secInMonth) + (todaysDate.day * secInDay)
+		local totalSecBday = (birthYear * secInYear) + (birthMonth * secInMonth) + (birthDay * secInDay)
+		local totalSecAlive = totalSecToday - totalSecBday
+		local secAliveText = display.newText(name.text..", you have been Alive for :", w/2, 100, native.systemFont, 30)
+		local secAlive = display.newText(totalSecAlive.." seconds", w/2, 200, native.systemFont, 30)
+		local secAliveText2 = display.newText("and counting", w/2, 300, native.systemFont, 30)
+	else
+		print("nil")
+	end
 end
 --Exit keyboard function
 local function keyboardListener (event)

@@ -65,6 +65,7 @@ local function reset () --Simple reset function. Remember to update with new var
 	egress2=false
 	egress=false
 	halt=true
+	startGame.alpha=1
 end
 
 clickR:addEventListener("tap",reset)
@@ -114,7 +115,7 @@ function startTime(event) --Starts the game
 		egress2=false
 		halt=false
 	end
-
+	startGame.alpha=0
 end
 
 startGame:addEventListener("tap",startTime)
