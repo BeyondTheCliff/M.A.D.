@@ -26,14 +26,14 @@ background:addEventListener("tap", keyboardListener)
 
 --Calculating function which can be used multiple times
 local function calc(event)
-	if (end_text1~=nil or end_text2~=nil or end_text3~=nil) then
+	if (end_text1~=nil or end_text2~=nil or end_text3~=nil) then --Removes any old texts before recreating them
 		end_text1:removeSelf()
 		end_text2:removeSelf()
 		end_text3:removeSelf()
 	end
-	local subtotal = inputP.text
-	local tip = inputT.text
-	local total = ((tip/100)*subtotal)+subtotal
+	local subtotal = inputP.text 
+	local tip = (inputT.text/100)*subtotal
+	local total = subtotal+tip
 	subtotal=string.format( "Subtotal: $%3.2f", subtotal )
 	tip=string.format( "Tip: $%3.2f", tip )
 	total=string.format( "Total: $%3.2f", total )

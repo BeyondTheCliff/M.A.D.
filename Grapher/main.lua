@@ -33,7 +33,7 @@ function run(event)
 			print("X="..x)
 			print("Y="..y)
 		end
-		arr[i]=display.newImage("10square.png",x,y)
+		arr[i]=display.newCircle(x,y,10)
 		state=1
 	end
 end
