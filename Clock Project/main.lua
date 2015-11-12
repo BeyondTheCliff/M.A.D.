@@ -8,6 +8,14 @@ Click the rim or center of the clock to switch between: running, paused, or chan
 Click the digital clock to hide or show it. It will reset to white when shown again.
 The clock updates to real time every 1 second
 Every minute, the number of the current hour will spin.
+
+x=cos(i/resolution-rotationShift)*radius+offset
+y=sin(i/resolution-rotationShift)*radius+offset
+i - number of iterations to run
+resolution = i / tau
+rotationShift = pi / 2 or 90 degrees
+radius - in pixels 
+offset - also in pixels
 --]]
 w = display.contentWidth --My own personal globals
 h = display.contentHeight
@@ -20,8 +28,8 @@ local pauseT = display.newText("Paused",w/2,h*0.9,nil,70) --Some text to notify 
 pauseT.alpha=0 --Auto set to invisible
 tick={} --making the second ticks
 for i=1,60 do 
-	local x = -math.sin(i/9.54)*(280)+w/2 --YAY! Math!
-	local y =  math.cos(i/9.54)*(280)+h/2 --More math
+	local x = math.cos(i/9.54-1.57)*(280)+w/2 --YAY! Math!
+	local y = math.sin(i/9.54-1.57)*(280)+h/2 --More math
 	tick[i] = display.newText("|",x,y,nil,30) --I used "|" pipes to make the ticks
 	tick[i].rotation=i*6 --Using pipes is quick and easy
 	tick[i]:setFillColor(0.65,0.65,0.65)
@@ -42,8 +50,8 @@ numbers={}
 state=0
 useTransition=false
 for i=1,12 do --Creates the numbers using sin and cos to make a circle
-	local x = math.cos(i/(1.91*1)-1.57)*245+w/2
-	local y = math.sin(i/(1.91*1)-1.57)*245+h/2
+	local x = math.cos(i/1.91-1.57)*245+w/2
+	local y = math.sin(i/1.91-1.57)*245+h/2
 	numbers[i]=display.newText(i,x,y,nil,60)
 	numbers[i].numX=i
 	numbers[i]:setFillColor(1,1,1)
@@ -64,7 +72,7 @@ function time( event ) --The keeper of the time. Updates 1000ms
 	local minutes = os.date("%M")
 	local seconds = os.date("%S")
 	local total = (hours*3600)+(minutes*60)+seconds
-	if (useTransition==true) then --You can choose to use smooth movements, but it does not work well
+	if (useTransition==true) then --You can choose to use smooth movements
 		transition.to(secHand,{time=900,rotation=((seconds)*6)+secHand.rotation})
 		transition.to(minHand,{time=500,rotation=((minutes*60+seconds)/10)})
 		transition.to(hourHand,{time=500,rotation=((total/3600)*30)})
@@ -95,18 +103,18 @@ end
 local function stateC( event ) --Main logic section for pausing and other states
 	if (event.phase=="began") then
 		backgroundCir:setStrokeColor(1,0.25,0.25)
-		if (state==0) then
+		if (state==0) then --Pauses the clock
 			state=1
 			print("pause")
 			print("state:"..state)
-		elseif (state==1) then
+		elseif (state==1) then --Runs the clock and the color changer
 			state=2
 			time()
 			print("state:"..state)
-		elseif (state==2) then
+		elseif (state==2) then --Runs the clock normally
 			state=0
 			print("state:"..state)
-		else
+		else --Backup for outside states
 			state=1
 		end
 	elseif (event.phase=="ended") then
