@@ -1,47 +1,52 @@
 --Ian Smelser 
---11/5/15
+--11/11/15
 --Clock app
 
+--[[
+Click the rim or center of the clock to switch between: running, paused, or changing the 
+	digital clock's color. 
+Click the digital clock to hide or show it. It will reset to white when shown again.
+The clock updates to real time every 1 second
+Every minute, the number of the current hour will spin.
+--]]
 w = display.contentWidth --My own personal globals
 h = display.contentHeight
-
 local Dclock = display.newText("",w/2,h*0.13,nil,80) --Digital Clock at the top
 Dclock.numX=0
 local backgroundCir = display.newCircle(w/2,h/2,w/2.1) --Background Circle (Basically a ring)
-local pauseT = display.newText("Paused",w/2,h*0.9,nil,70) --Some text to notify the user if paused
+backgroundCir.strokeWidth=10
+backgroundCir:setFillColor(0,0,0)
+local pauseT = display.newText("Paused",w/2,h*0.9,nil,70) --Some text to notify if paused
 pauseT.alpha=0 --Auto set to invisible
 tick={} --making the second ticks
 for i=1,60 do 
-	print(i)
-	local x = -math.sin(i/9.57)*280+w/2 --YAY! Math!
-	local y = math.cos(i/9.57)*280+h/2 --More math
-	tick[i] = display.newText("|",x,y,nil,35) --I used "|" pipes to make the ticks
+	local x = -math.sin(i/9.54)*(280)+w/2 --YAY! Math!
+	local y =  math.cos(i/9.54)*(280)+h/2 --More math
+	tick[i] = display.newText("|",x,y,nil,30) --I used "|" pipes to make the ticks
 	tick[i].rotation=i*6 --Using pipes is quick and easy
 	tick[i]:setFillColor(0.65,0.65,0.65)
 end
-local hourHand = display.newRect(w/2,h/2,200,30) --The hour hand is the widest and shortest
-hourHand.anchorX=0
+local hourHand = display.newRect(w/2,h/2,30,170) --The hour hand is the widest and shortest
+hourHand.anchorY=1
 hourHand:setFillColor(0,0.5,0) --and green
-hourHand.rotation=-90
-local minHand = display.newRect(w/2,h/2,240,20) --Minutes hand is in the middle
-minHand.anchorX=0
+hourHand.rotation=0
+local minHand = display.newRect(w/2,h/2,20,240) --Minutes hand is in the middle
+minHand.anchorY=1
 minHand:setFillColor(0,0,0.8) --and blue
-minHand.rotation=-90
-local secHand = display.newRect(w/2,h/2,270,10) --Second hand is long and thin
-secHand.anchorX=0
+minHand.rotation=0
+local secHand = display.newRect(w/2,h/2,10,270) --Second hand is long and thin
+secHand.anchorY=1
 secHand:setFillColor(0.7,0,0) --and red
-secHand.rotation=-90
-backgroundCir.strokeWidth=10
-backgroundCir:setFillColor(0,0,0)
+secHand.rotation=0
 numbers={}
 state=0
-a=6
+useTransition=false
 for i=1,12 do --Creates the numbers using sin and cos to make a circle
-	a=a+1
-	local x = -math.sin(a/1.91)*250+w/2
-	local y = math.cos(a/1.91)*250+h/2
+	local x = math.cos(i/(1.91*1)-1.57)*245+w/2
+	local y = math.sin(i/(1.91*1)-1.57)*245+h/2
 	numbers[i]=display.newText(i,x,y,nil,60)
 	numbers[i].numX=i
+	numbers[i]:setFillColor(1,1,1)
 end
 local knob = display.newCircle(w/2,h/2,20)
 local function colorC( event )
@@ -54,58 +59,72 @@ local function colorC( event )
 	print(x[3])
 	Dclock:setFillColor(x[1],x[2],x[3])
 end
-local function time( event ) --The keeper of the time. Updates 1000ms 
-	local currentT = os.date("*t")
+function time( event ) --The keeper of the time. Updates 1000ms 
 	local hours = os.date("%I")
 	local minutes = os.date("%M")
 	local seconds = os.date("%S")
 	local total = (hours*3600)+(minutes*60)+seconds
-	--transition.to(secHand,{time=900,rotation=((seconds+1)*6)-90})
-	secHand.rotation=((seconds)*6)-90
-	--transition.to(minHand,{time=500,rotation=(((minutes*60+seconds+60)/10))-90})
-	minHand.rotation=((minutes*60+seconds)/10)-90
-	--transition.to(hourHand,{time=500,rotation=((total+3600)/240)-90})
-	hourHand.rotation=((total/3600)*30)-90
-	print(secHand.rotation)
-	if (state~=1) then
+	if (useTransition==true) then --You can choose to use smooth movements, but it does not work well
+		transition.to(secHand,{time=900,rotation=((seconds)*6)+secHand.rotation})
+		transition.to(minHand,{time=500,rotation=((minutes*60+seconds)/10)})
+		transition.to(hourHand,{time=500,rotation=((total/3600)*30)})
+	else --I use totaling methods to get accurate positions
+		secHand.rotation=((seconds)*6) --times six because 60*6=360
+		minHand.rotation=((minutes*60+seconds)/10) --totals minutes and seconds
+		hourHand.rotation=((total/3600)*30)	--uses the total above
+	end
+	if (state~=1) then --Logic check for pausing
 		timer.performWithDelay(1000,time)
 		pauseT.alpha=0
-	else
+	else --Activates to not run
 		pauseT.alpha=1
 		print("pause")
 	end
-	if (state==2) then
+	if (state==2) then --State 2 runs and changes colors
 		colorC()
 		pauseT.alpha=0
 	end
-	Dclock.text=os.date("%I:%M:%S")
+	Dclock.text=os.date("%I:%M:%S %p") --Updates digital clock
+	print(os.date("%c"))
+	if (os.date("%S")=="00") then --Spins the hour every minute
+		print("spin")
+		local Num = tonumber(os.date("%I"))
+		transition.to(numbers[Num],{time=1000,rotation=numbers[Num].rotation+360})	
+	end
 end
-local function stateC( event )
-	if (state==0) then
-		state=1
-		print("pause")
-		print("state:"..state)
-	elseif (state==1) then
-		state=2
-		time()
-		print("state:"..state)
-	elseif (state==2) then
-		state=0
-		print("state:"..state)
+local function stateC( event ) --Main logic section for pausing and other states
+	if (event.phase=="began") then
+		backgroundCir:setStrokeColor(1,0.25,0.25)
+		if (state==0) then
+			state=1
+			print("pause")
+			print("state:"..state)
+		elseif (state==1) then
+			state=2
+			time()
+			print("state:"..state)
+		elseif (state==2) then
+			state=0
+			print("state:"..state)
+		else
+			state=1
+		end
+	elseif (event.phase=="ended") then
+		backgroundCir:setStrokeColor(1,1,1)
+	else
+		backgroundCir:setStrokeColor(1,1,1)
 	end
 end
 local function hideClock( event ) --Allows the user to hide the digital clock
 	if (Dclock.numX==0) then
-		--Dclock.alpha=0
 		Dclock:setFillColor(0,0,0)
 		Dclock.numX=1
-		--timer.performWithDelay(1000,hideClock)
 	else
-		--Dclock.alpha=1
-		Dclock:setFillColor(1,1,1)
+		Dclock:setFillColor(1,1,1) --The clock's color resets when shown
 		Dclock.numX=0
 	end
 end
-backgroundCir:addEventListener("tap",stateC)
+backgroundCir:addEventListener("touch",stateC) --All of the event listeners
 Dclock:addEventListener("tap",hideClock)
-time()
+knob:addEventListener("tap",stateC)
+time() --The startup section
