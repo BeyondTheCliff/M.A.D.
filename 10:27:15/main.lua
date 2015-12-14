@@ -2,7 +2,7 @@
 
 local score = 0
 local scoreT = display.newText(score,display.contentCenterX,140,nil,60)
-local addT = display.newText("Add",display.contentCenterX,display.contentHeight*0.9)
+local addT = display.newText("Prime",display.contentCenterX,display.contentHeight*0.9)
 
 function click(event)
 	local tar = event.target.text
@@ -23,14 +23,15 @@ end
 matrix={}
 i=0
 v=0
+count=1
 for i=1,10 do
 	matrix[i]={}
 	for v=1,10 do
-		matrix[i][v]=display.newText(i*v,i*60-10,v*60+200,nil,35)
-		print(matrix[i][v].text)
+		matrix[i][v]=display.newText(count,i*60-10,v*60+200,nil,35)
 		matrix[i][v].num1=i
 		matrix[i][v].num2=v
 		matrix[i][v]:addEventListener("touch",click)
+		count=count+1
 	end
 end
 
@@ -42,4 +43,18 @@ function addAll( event )
 		end
 	end
 end
-addT:addEventListener("tap",addAll)
+function Fprimes( event )
+	for i=1,10 do
+		for v=1,10 do
+			local num = matrix[i][v].text
+			print(num)
+			for a=2,num do
+				if (num%a==0 and num~=tostring(a)) then
+					matrix[i][v].alpha=0
+					print("--"..a)
+				end
+			end
+		end
+	end
+end
+addT:addEventListener("tap",Fprimes)

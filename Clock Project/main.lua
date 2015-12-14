@@ -4,7 +4,7 @@
 
 --[[
 Click the rim or center of the clock to switch between: running, paused, or changing the 
-	digital clock's color. 
+	digital clock's color. And now has 24 hour time at state 3. 
 Click the digital clock to hide or show it. It will reset to white when shown again.
 The clock updates to real time every 1 second
 Every minute, the number of the current hour will spin.
@@ -28,8 +28,8 @@ local pauseT = display.newText("Paused",w/2,h*0.9,nil,70) --Some text to notify 
 pauseT.alpha=0 --Auto set to invisible
 tick={} --making the second ticks
 for i=1,60 do 
-	local x = math.cos(i/9.54-1.57)*(280)+w/2 --YAY! Math!
-	local y = math.sin(i/9.54-1.57)*(280)+h/2 --More math
+	local x = math.cos(i/9.54-1.57)*(289)+w/2 --YAY! Math!
+	local y = math.sin(i/9.54-1.57)*(289)+h/2 --More math
 	tick[i] = display.newText("|",x,y,nil,30) --I used "|" pipes to make the ticks
 	tick[i].rotation=i*6 --Using pipes is quick and easy
 	tick[i]:setFillColor(0.65,0.65,0.65)
@@ -82,6 +82,7 @@ function time( event ) --The keeper of the time. Updates 1000ms
 		hourHand.rotation=((total/3600)*30)	--uses the total above
 	end
 	if (state~=1) then --Logic check for pausing
+		switch24("12")
 		timer.performWithDelay(1000,time)
 		pauseT.alpha=0
 	else --Activates to not run
@@ -92,7 +93,17 @@ function time( event ) --The keeper of the time. Updates 1000ms
 		colorC()
 		pauseT.alpha=0
 	end
-	Dclock.text=os.date("%I:%M:%S %p") --Updates digital clock
+	if (state==3) then
+		Dclock.text=os.date("%H:%M:%S")
+		if (os.date("%H")>"12") then
+			switch24("24")
+		else
+			switch24("12")
+		end
+	else
+		Dclock.text=os.date("%I:%M:%S %p")
+		switch24("12")
+	end
 	print(os.date("%c"))
 	if (os.date("%S")=="00") then --Spins the hour every minute
 		print("spin")
@@ -112,6 +123,9 @@ local function stateC( event ) --Main logic section for pausing and other states
 			time()
 			print("state:"..state)
 		elseif (state==2) then --Runs the clock normally
+			state=3
+			print("state:"..state)
+		elseif (state==3) then --24 hour 
 			state=0
 			print("state:"..state)
 		else --Backup for outside states
@@ -121,6 +135,19 @@ local function stateC( event ) --Main logic section for pausing and other states
 		backgroundCir:setStrokeColor(1,1,1)
 	else
 		backgroundCir:setStrokeColor(1,1,1)
+	end
+end
+function switch24( pass )
+	if (pass=="24") then
+		for i=1,12 do --Creates the numbers using sin and cos to make a circle
+			numbers[i].text=i+12
+			numbers[i]:setFillColor(1,0.25,0.25)
+		end
+	else
+		for i=1,12 do --Creates the numbers using sin and cos to make a circle
+			numbers[i].text=i
+			numbers[i]:setFillColor(1,1,1)
+		end
 	end
 end
 local function hideClock( event ) --Allows the user to hide the digital clock
