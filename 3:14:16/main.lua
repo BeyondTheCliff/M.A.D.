@@ -46,10 +46,10 @@ local wheelLeft = display.newImageRect("wheelLeft.png",53,56)
 wheelLeft.x,wheelLeft.y=carBody.x+85,carBody.y+20
 car:insert(wheelLeft)
 
-local carShape = {-160,-10, 160,-10, 120,-50, -120,-50}
+local carShape = {-150,20, 150,20, 120,-50, -120,-50}
 physics.addBody(carBody,"dynamic",{bounce=0.5,friction=1,denisty=10,shape=carShape})
-physics.addBody(wheelRight,"dynamic",{radius=25,friction=1.5,denisty=5})
-physics.addBody(wheelLeft,"dynamic",{radius=25,friction=1.5,denisty=5})
+physics.addBody(wheelRight,"dynamic",{radius=25,friction=2,denisty=5})
+physics.addBody(wheelLeft,"dynamic",{radius=25,friction=2,denisty=5})
 
 local pivotRight = physics.newJoint("pivot",wheelRight,carBody,wheelRight.x,wheelRight.y)
 local pivotLeft = physics.newJoint("pivot",wheelLeft,carBody,wheelLeft.x,wheelLeft.y)
