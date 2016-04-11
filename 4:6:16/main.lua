@@ -9,6 +9,8 @@ local xLocation = display.contentWidth*0.05
 local yLocation = display.contentHeight*0.2
 local Squares = {}
 
+local lives = 3
+local lifeText = display.newText("lives:"..lives,100,100,nil,40)
 
 local function killThemAllOneByOne(event)
 	--local identification = event.target.identification

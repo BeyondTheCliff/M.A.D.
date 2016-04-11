@@ -17,19 +17,35 @@ local lives = 3
 local lifeDisplay = display.newText("Lives:"..lives, w*0.25, h*0.1, nil, 90)
 local score = 0
 local scoreDisplay = display.newText("Score:"..score, w*0.75, h*0.1, nil, 90)
-local displayGameOver = display.newText("Game Over!", display.contentWidth/2, display.contentHeight/2, nil, 90)
+local displayGameOver = display.newText("Game Over!", w/2, h/2, nil, 90)
 displayGameOver:setFillColor(1,0.2,0.2)
 displayGameOver.alpha=0
+local displayGameWin = display.newText("You Win!", w/2, h/2, nil, 90)
+displayGameWin:setFillColor(0.2,0.2,1)
+displayGameWin.alpha=0
+
+local brickSound = audio.loadStream("hitbrick.wav")
+local winGameSound = audio.loadStream("win.wav")
+local hitRight = audio.loadStream("hitwalls.wav")
+local loseLifeSound = audio.loadStream("loselife.wav")
+local gameOverSound = audio.loadStream("gameover.wav")
+local hitWall = audio.loadStream("hitwalls.wav")
 
 
 local function breakBlock( event )
 	local name = event.target.name
-	transition.to(blocks[name],{alpha=0,time=1000})  
+	transition.to(blocks[name],{alpha=0,time=500})  
 	blocks[name].isSensor=true
 	if (event.phase=="began") and (event.target.alpha>0.9) then
-		score=score+1	
+		score=score+1
+		audio.play(brickSound)
 	end
 	scoreDisplay.text="Score:"..score
+	if (score>29) then
+		transition.to(displayGameWin,{alpha=1,time=750})
+		physics.pause()
+		audio.play(winGameSound)
+	end
 end
 
 local function initBlocks( event )
@@ -38,17 +54,17 @@ local function initBlocks( event )
 			blocks[i]:removeSelf()
 		end
 	end
-	local xloc = w*0.05
+	local xloc = w*0.055
 	local yloc = h*0.2
 	blocks = {}
 	
 	for i=1,30 do
 		yloc=(math.ceil(i/10)*50)+(h*0.2)
 		if (xloc>w) then
-			xloc=w*0.05
+			xloc=w*0.055
 		end
-		blocks[i] = display.newRect(xloc,yloc,80,50)
-		xloc=xloc+(w*0.1)
+		blocks[i] = display.newRect(xloc,yloc,79,50)
+		xloc=xloc+(w*0.1)-1
 		--blocks[i]:setFillColor(math.random(),math.random(),math.random())
 		if (i%3==0) then
 			blocks[i]:setFillColor(1,0,0)
@@ -62,7 +78,6 @@ local function initBlocks( event )
 		physics.addBody(blocks[i],"static",{density=1})
 	end
 end
-initBlocks()
 
 local function initBall( event )
 	if (ball~=nil) then
@@ -74,7 +89,6 @@ local function initBall( event )
 	ball:setLinearVelocity(300+math.random(-50,50),400+math.random(-50,50))
 	ball.name="ball"
 end
-initBall()
 
 local top = display.newRect(w*0.5,h*0.001,w,h*0.01)
 local sideLeft = display.newRect(w*0.001,h/2,w*0.01,h)
@@ -134,6 +148,7 @@ puck:addEventListener("collision",puckBounce)
 
 local function startGame( event )
 	displayGameOver.alpha=0
+	displayGameWin.alpha=0
 	lives=3
 	lifeDisplay.text="Lives:"..lives
 	score=0
@@ -145,17 +160,40 @@ local function startGame( event )
 	puck:setLinearVelocity(0,0)
 end
 displayGameOver:addEventListener("tap",startGame)
+displayGameWin:addEventListener("tap",startGame)
 
 local function Counter(event)
 	if (event.phase=="began") then
 		lives = lives - 1
 		lifeDisplay.text = "Lives:"..lives
+		audio.play(loseLifeSound)
 		if lives == 0 then --Game over
-			transition.to(displayGameOver,{alpha=1,time=1000})
+			transition.to(displayGameOver,{alpha=1,time=750})
 			physics.pause()
+			audio.play(gameOverSound)
 		end
 	end
 end
 bottom:addEventListener("collision", Counter)
 
+local function autoPlay( event )
+	if (ball.x>110) and (ball.x<w-110) then
+		transition.to(puck,{x=ball.x,time=45})
+	end
+	timer.performWithDelay(50,autoPlay)
+end
+lifeDisplay:addEventListener("tap",autoPlay)
+
+local function wallHitFunction(event)
+	if event.phase == "began" then
+		audio.play(hitWall)
+	end
+end
+
+sideRight:addEventListener("collision", wallHitFunction)
+sideLeft:addEventListener("collision", wallHitFunction)
+puck:addEventListener("collision",wallHitFunction)
+
+initBlocks()
+initBall()
 
