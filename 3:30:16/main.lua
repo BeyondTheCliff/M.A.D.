@@ -24,12 +24,12 @@ local displayGameWin = display.newText("You Win!", w/2, h/2, nil, 90)
 displayGameWin:setFillColor(0.2,0.2,1)
 displayGameWin.alpha=0
 
-local brickSound = audio.loadStream("hitbrick.wav")
-local winGameSound = audio.loadStream("win.wav")
-local hitRight = audio.loadStream("hitwalls.wav")
-local loseLifeSound = audio.loadStream("loselife.wav")
-local gameOverSound = audio.loadStream("gameover.wav")
-local hitWall = audio.loadStream("hitwalls.wav")
+local brickSound = audio.loadSound("hitbrick.wav")
+local winGameSound = audio.loadSound("win.wav")
+local hitRight = audio.loadSound("hitwalls.wav")
+local loseLifeSound = audio.loadSound("loselife.wav")
+local gameOverSound = audio.loadSound("gameover.wav")
+local hitWall = audio.loadSound("hitwalls.wav")
 
 
 local function breakBlock( event )
