@@ -9,112 +9,119 @@ display.setStatusBar(display.HiddenStatusBar)
 
 local widget = require("widget")
 
-local face = display.newImageRect("nature.jpg",500,500)
-face.x,face.y=w/2,h/2
-local background = display.newRect(w/2,h/2,w,h)
-local rValue = display.newText("Red=100%",w*0.5,h*0.1,nil,60)
-rValue:setFillColor(1,0,0)
-local gValue = display.newText("Green=100%",w*0.5,h*0.2,nil,60)
-gValue:setFillColor(0,1,0)
-local bValue = display.newText("Blue=100%",w*0.5,h*0.3,nil,60)
-bValue:setFillColor(0,0,1)
-local aValue = display.newText("Alpha=100%",w*0.5,h*0.4,nil,60)
-aValue:setFillColor(0,0,0)
 red=1
 green=1
 blue=1
 alpha=1
-local function redFunction( event )
-	red = event.value/100
-	rValue.text="Red="..event.value.."%"
-	background:setFillColor(red,green,blue,alpha)
-end
-local function greeFunction( event )
-	green = event.value/100
-	gValue.text="Green="..event.value.."%"
-	background:setFillColor(red,green,blue,alpha)
-end
-local function blueFunction( event )
-	blue = event.value/100
-	bValue.text="Blue="..event.value.."%"
-	background:setFillColor(red,green,blue,alpha)
-end
-local function alphaFunction( event )
-	alpha = event.value/100
-	aValue.text="Alpha="..event.value.."%"
+random=0
+
+local face = display.newImageRect("nature.jpg",500,500)
+face.x,face.y=w/2,h/2
+local background = display.newRect(w/2,h/2,w,h)
+background:setFillColor(red,green,blue,alpha)
+Values={}
+Values["Red"] = display.newText("Red=".. red*100 .."%",w*0.5,h*0.1,nil,60)
+Values["Red"]:setFillColor(1,0,0)
+Values["Red"].name="Red"
+Values["Green"] = display.newText("Green=".. green*100 .."%",w*0.5,h*0.2,nil,60)
+Values["Green"]:setFillColor(0,1,0)
+Values["Green"].name="Green"
+Values["Blue"] = display.newText("Blue=".. blue*100 .."%",w*0.5,h*0.3,nil,60)
+Values["Blue"]:setFillColor(0,0,1)
+Values["Blue"].name="Blue"
+Values["Alpha"] = display.newText("Alpha=".. alpha*100 .."%",w*0.5,h*0.4,nil,60)
+Values["Alpha"]:setFillColor(0,0,0)
+Values["Alpha"].name="Alpha"
+
+local function colorFunction( event )
+	local color = event.value/100
+	local id = event.target.id
+	if (id=="Red") then red=color end
+	if (id=="Green") then green=color end
+	if (id=="Blue") then blue=color end
+	if (id=="Alpha") then alpha=color end
+	Values[event.target.id].text=event.target.id.."="..event.value.."%"
 	background:setFillColor(red,green,blue,alpha)
 end
 
-rSlider = widget.newSlider(
+Sliders={}
+Sliders["Red"] = widget.newSlider(
     {
         x = w/2,
         y = h*0.6,
         width = w*0.7,
         value = 100,
-        listener = redFunction,
+        listener = colorFunction,
+        id="Red"
     }
 )
-gSlider = widget.newSlider(
+Sliders["Green"] = widget.newSlider(
     {
         x = w/2,
         y = h*0.7,
         width = w*0.7,
         value = 100,
-        listener = greeFunction
+        listener = colorFunction,
+        id="Green"
     }
 )
-bSlider = widget.newSlider(
+Sliders["Blue"] = widget.newSlider(
     {
         x = w/2,
         y = h*0.8,
         width = w*0.7,
         value = 100,
-        listener = blueFunction
+        listener = colorFunction,
+        id="Blue",
     }
 )
-aSlider = widget.newSlider(
+Sliders["Alpha"] = widget.newSlider(
     {
         x = w/2,
         y = h*0.9,
         width = w*0.7,
         value = 100,
-        listener = alphaFunction
+        listener = colorFunction,
+        id="Alpha"
     }
 )
 
-local function randRed( event)
+local function random( event)
+	local name = event.target.name
 	random=0
 	random = math.random(0,100)
-	rValue.text = "Red="..random.."%"
-	rSlider:setValue(random)
-	red = random/100
+	if (name=="Red") then red=random/100 end
+	if (name=="Green") then green=random/100 end
+	if (name=="Blue") then blue=random/100 end
+	if (name=="Alpha") then alpha=random/100 end
+	Values[name].text = name.."="..random.."%"
+	Sliders[name]:setValue(random)
+	print(red..":"..random)
 	background:setFillColor(red,green,blue,alpha)
 end
-rValue:addEventListener("tap",randRed)
-local function randGreen( event)
-	random=0
-	local random = math.random(0,100)
-	gValue.text = "Green="..random.."%"
-	gSlider:setValue(random)
-	green = random/100
-	background:setFillColor(red,green,blue,alpha)
-end
-gValue:addEventListener("tap",randGreen)
-local function randBlue( event)
-	random=0
-	local random = math.random(0,100)
-	bValue.text = "Blue="..random.."%"
-	bSlider:setValue(random)
-	blue = random/100
-	background:setFillColor(red,green,blue,alpha)
-end
-bValue:addEventListener("tap",randBlue)
-local function randAlpha( event)
-	random=0
-	local random = math.random(0,100)
-	aValue.text = "Alpha="..random.."%"
-	aSlider:setValue(random)
-	alpha = random/100
-	background:setFillColor(red,green,blue,alpha)
-end
-aValue:addEventListener("tap",randAlpha)
+Values["Red"]:addEventListener("tap",random)
+Values["Green"]:addEventListener("tap",random)
+Values["Blue"]:addEventListener("tap",random)
+Values["Alpha"]:addEventListener("tap",random)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
