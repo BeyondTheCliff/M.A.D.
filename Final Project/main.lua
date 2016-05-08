@@ -6,18 +6,27 @@
 Ideas:
 Mini games
 	Multiple smaller games eg. battle ship, chess, checkers
-RGP? 
-	Larger more complicated game
-	Might take to long
 Multi-player 
 	Could not do servers
 	Could do local or p2p
-	
+battleship.battleship
+mainMenu
+
 ]]--
 w = display.contentWidth
 h = display.contentHeight
 display.setDefault("background",0,0,0)
 display.setStatusBar(display.HiddenStatusBar)
 
-local widget = require("widget")
-local physics = require("physics")
+widget = require("widget")
+physics = require("physics")
+composer = require("composer")
+
+function switchScene( scene )
+	if (scene==nil) then
+		composer.gotoScene("mainMenu")
+	else
+		composer.gotoScene(scene)
+	end
+end
+switchScene("battleship.battleship")
