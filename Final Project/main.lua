@@ -29,4 +29,4 @@ function switchScene( scene )
 		composer.gotoScene(scene)
 	end
 end
-switchScene("battleship.battleship")
+switchScene("mainMenu")

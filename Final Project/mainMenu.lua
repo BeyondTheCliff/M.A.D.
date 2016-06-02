@@ -60,13 +60,57 @@ function scene:create(event)
 		strokeWidth = 6,
 		x=w/2,
 		y=h*0.3,
-		id="fingerPaint.field"
+		id="DrawingApp.field"
     }
 	)
 	sceneGroup:insert(button2[1])
-	button2[2] = display.newText("Finger Painter",w/2,h*0.3,"AmericanTypewriter",80)
+	button2[2] = display.newText("Drawing App",w/2,h*0.3,"AmericanTypewriter",80)
 	sceneGroup:insert(button2[2])
 	button2[2]:addEventListener("touch",callSwitch)
+	-----------------------------
+	--local button3 = {}
+	--button3[1] = widget.newButton(
+    --{
+	--	onEvent = callSwitch,
+	--	emboss = true,
+	--	shape = "roundedRect",
+	--	width = 600,
+	--	height = 100,
+	--	cornerRadius = 12,
+	--	fillColor = { default={1,0.1,0.1}, over={0.5,0.1,0.1,0.4} },
+	--	strokeColor = { default={0.5,0,0}, over={1,0.2,0.1} },
+	--	strokeWidth = 6,
+	--	x=w/2,
+	--	y=h*0.4,
+	--	id="pinball.pinball"
+    --}
+	--)
+	--sceneGroup:insert(button3[1])
+	--button3[2] = display.newText("Pinball",w/2,h*0.4,"AmericanTypewriter",80)
+	--sceneGroup:insert(button3[2])
+	--button3[2]:addEventListener("touch",callSwitch)
+	-----------------------------
+	local button4 = {}
+	button4[1] = widget.newButton(
+    {
+		onEvent = callSwitch,
+		emboss = true,
+		shape = "roundedRect",
+		width = 600,
+		height = 100,
+		cornerRadius = 12,
+		fillColor = { default={1,0.1,0.1}, over={0.5,0.1,0.1,0.4} },
+		strokeColor = { default={0.5,0,0}, over={1,0.2,0.1} },
+		strokeWidth = 6,
+		x=w/2,
+		y=h*0.4,
+		id="Tic-Tac-Toe.tictac"
+    }
+	)
+	sceneGroup:insert(button4[1])
+	button4[2] = display.newText("Tic-Tac-Toe",w/2,h*0.4,"AmericanTypewriter",80)
+	sceneGroup:insert(button4[2])
+	button4[2]:addEventListener("touch",callSwitch)
 	-----------------------------
 end
 scene:addEventListener( "create", scene )

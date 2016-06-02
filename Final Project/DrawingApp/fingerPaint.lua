@@ -125,7 +125,7 @@ function fingerPaint.newCanvas(...)
 	-- CREATE CANVAS BACKGROUND RECT
 	--------------------------------------------------------------------------------
 	local background = display.newRect(canvas, screenLeft - screenWidth, screenTop - screenHeight, screenWidth * 3, screenHeight * 3)
-	background:setFillColor(canvasR, canvasG, canvasB)
+	background:setFillColor(canvasR, canvasG, canvasB, canvasA)
 	background.isHitTestable = true
 		
 	--------------------------------------------------------------------------------
